@@ -539,7 +539,7 @@
     const radius = center - 18;
 
     let currentRotation = 0;
-    let alreadySpun = localStorage.getItem("wins_ruleta_usada4") === "si" || localStorage.getItem("wins_ruleta_usada4") === "si";
+    let alreadySpun = localStorage.getItem("wins_ruleta_usada5") === "si" || localStorage.getItem("wins_ruleta_usada3") === "si" || localStorage.getItem("wins_ruleta_usada4") === "si";
 
     const colors = [
       "#8d0000",
@@ -667,7 +667,7 @@
       }
 
       alreadySpun = true;
-      localStorage.setItem("wins_ruleta_usada3", "si");
+      localStorage.setItem("wins_ruleta_usada5", "si");
 
       spinBtn.disabled = true;
       spinBtn.textContent = "Girando...";
@@ -683,7 +683,7 @@
       arrowToChat.style.display = "none";
 
       const selectedPrize = elegirPremioPorPorcentaje();
-      localStorage.setItem("wins_ruleta_premio3", selectedPrize.nombre);
+      localStorage.setItem("wins_ruleta_premio5", selectedPrize.nombre);
       const selectedIndex = premios.findIndex(p => p.nombre === selectedPrize.nombre);
 
       const total = premios.length;
@@ -800,7 +800,7 @@
     if (alreadySpun) {
       bloquearRuletaUsada();
 
-      const savedPrize = premios.find(p => p.nombre === localStorage.getItem("wins_ruleta_premio3"));
+      const savedPrize = premios.find(p => p.nombre === (localStorage.getItem("wins_ruleta_premio5") || localStorage.getItem("wins_ruleta_premio3") || localStorage.getItem("wins_ruleta_premio4")));
       if (savedPrize) {
         if (usedCard) usedCard.style.display = "none";
         mostrarResultado(savedPrize, false);
