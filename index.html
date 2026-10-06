@@ -408,6 +408,12 @@
       <div class="prize-name" id="prizeName">---</div>
 
       <p class="claim-text">
+        Para activar este premio tenés que hacer una carga mínima de:
+        <br>
+        <strong id="minimumLoad">---</strong>
+      </p>
+
+      <p class="claim-text">
         Para activarlo, abrí el webchat y escribí:
         <br>
         <strong id="claimMessage">QUIERO MI PREMIO</strong>
@@ -475,12 +481,12 @@
 
   <script>
     const premios = [
-      { nombre: "5% EXTRA", porcentaje: 32 },
-      { nombre: "10% EXTRA", porcentaje: 32 },
-      { nombre: "15% EXTRA", porcentaje: 1 },
-      { nombre: "1.000 FICHAS", porcentaje: 32 },
-      { nombre: "2.000 FICHAS", porcentaje: 2 },
-      { nombre: "3.000 FICHAS", porcentaje: 1 }     
+      { nombre: "3.500 FICHAS", cargaMinima: "10.500", porcentaje: 32 },
+      { nombre: "2.500 EXTRA", cargaMinima: "5.000", porcentaje: 32 },
+      { nombre: "5.000 EXTRA", cargaMinima: "15.000", porcentaje: 1 },
+      { nombre: "1.000 FICHAS", cargaMinima: "3.000", porcentaje: 32 },
+      { nombre: "2.000 FICHAS", cargaMinima: "4.000", porcentaje: 2 },
+      { nombre: "3.000 FICHAS", cargaMinima: "10.000", porcentaje: 1 }     
     ];
     const canvas = document.getElementById("wheel");
     const ctx = canvas.getContext("2d");
@@ -533,7 +539,7 @@
     const radius = center - 18;
 
     let currentRotation = 0;
-    let alreadySpun = localStorage.getItem("wins_ruleta_usada4") === "si";
+    let alreadySpun = localStorage.getItem("wins_ruleta_usada3") === "si" || localStorage.getItem("wins_ruleta_usada4") === "si";
 
     const colors = [
       "#8d0000",
@@ -677,6 +683,7 @@
       arrowToChat.style.display = "none";
 
       const selectedPrize = elegirPremioPorPorcentaje();
+      localStorage.setItem("wins_ruleta_premio3", selectedPrize.nombre);
       const selectedIndex = premios.findIndex(p => p.nombre === selectedPrize.nombre);
 
       const total = premios.length;
@@ -697,9 +704,10 @@
       }, 5200);
     }
 
-    function mostrarResultado(premio) {
+    function mostrarResultado(premio, animar = true) {
       prizeName.textContent = premio.nombre;
-      claimMessage.textContent = `QUIERO RECLAMAR ${premio.nombre}`;
+      document.getElementById("minimumLoad").textContent = `$${premio.cargaMinima}`;
+      claimMessage.textContent = `QUIERO RECLAMAR ${premio.nombre} - CARGA $${premio.cargaMinima}`;
 
       resultCard.style.display = "block";
 
@@ -707,12 +715,14 @@
       centerSpin.textContent = "Usado";
       centerSpin.style.opacity = "0.75";
 
-      lanzarConfetti();
+      if (animar) {
+        lanzarConfetti();
 
-      resultCard.scrollIntoView({
-        behavior: "smooth",
-        block: "center"
-      });
+        resultCard.scrollIntoView({
+          behavior: "smooth",
+          block: "center"
+        });
+      }
     }
 
     function abrirWebchat() {
@@ -789,6 +799,12 @@
 
     if (alreadySpun) {
       bloquearRuletaUsada();
+
+      const savedPrize = premios.find(p => p.nombre === localStorage.getItem("wins_ruleta_premio3"));
+      if (savedPrize) {
+        if (usedCard) usedCard.style.display = "none";
+        mostrarResultado(savedPrize, false);
+      }
     }
   </script>
 </body>
